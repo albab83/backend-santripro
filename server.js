@@ -11,6 +11,9 @@ app.use(cors());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/projects', require('./routes/project'));
+app.use('/api/journals', require('./routes/journal'));
+
 
 // Sync Database
 sequelize.sync()

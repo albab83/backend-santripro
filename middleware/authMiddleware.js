@@ -22,3 +22,10 @@ exports.verifyAdmin = (req, res, next) => {
   }
   next();
 };
+
+exports.verifySantri = (req, res, next) => {
+  if (req.user.role !== 'santri') {
+    return res.status(403).json({ message: 'Akses hanya untuk Santri' });
+  }
+  next();
+};

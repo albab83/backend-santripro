@@ -14,7 +14,7 @@ exports.register = async (req, res) => {
     }
 
     // Buat user baru
-    const user = await User.create({ nama, email, password, role });
+    const user = await User.create({ nama, email, password, role: 'santri' });
     return res.status(201).json({ message: 'User berhasil didaftarkan', user });
   } catch (error) {
     console.error(error);
@@ -44,6 +44,25 @@ exports.login = async (req, res) => {
 
     // Kirim response
     return res.status(200).json({ message: 'Login berhasil', token });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Terjadi kesalahan server' });
+  }
+};
+
+exports.registerAdmin = async (req, res) => {
+  try {
+    const { nama, email, password, role } = req.body;
+
+    // Cek jika email sudah terdaftar
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email sudah terdaftar!' });
+    }
+
+    // Buat user baru
+    const user = await User.create({ nama, email, password, role: 'admin' });
+    return res.status(201).json({ message: 'Admin berhasil didaftarkan', user });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Terjadi kesalahan server' });
