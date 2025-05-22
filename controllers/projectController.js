@@ -15,18 +15,20 @@ exports.createProject = async (req, res) => {
 exports.getAllProjects = async (req, res) => {
   try {
     const projects = await Project.findAll({
-      include: { model: User, attributes: ['name', 'email'] },
-      order: [['createdAt', 'DESC']]
+      include: { model: User, attributes: ['nama', 'email'] },
+      order: [['tanggal_pengajuan', 'DESC']]
     });
+
     res.json(projects);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Gagal mengambil data project' });
   }
 };
 
 exports.getMyProjects = async (req, res) => {
   try {
-    const user_id = req.user.id;
+    const user_id = req.user.userId;
     const projects = await Project.findAll({ where: { user_id } });
     res.json(projects);
   } catch (error) {
