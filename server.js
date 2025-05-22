@@ -11,8 +11,8 @@ app.use(cors());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/projects', require('./routes/project'));
-app.use('/api/journals', require('./routes/journal'));
+app.use('/api/project', require('./routes/project'));
+app.use('/api/journal', require('./routes/journal'));
 
 
 // Sync Database

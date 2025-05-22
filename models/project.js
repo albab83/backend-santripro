@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATEONLY,
       defaultValue: DataTypes.NOW,
     },
+    alasan_penolakan: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   }, {
     tableName: 'projects',
     timestamps: true,
