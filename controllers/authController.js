@@ -41,12 +41,11 @@ exports.login = async (req, res) => {
 
     const plainUser = user.get({ plain: true });
     // Generate JWT token
-    const token = jwt.sign({ userId: plainUser.id, role: plainUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: plainUser.id, role: plainUser.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     // Kirim response
-    return res.status(200).json({ message: 'Login berhasil', token });
+    return res.status(200).json({ message: 'Login berhasil', token, user});
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: 'Terjadi kesalahan server' });
   }
 };
@@ -67,5 +66,18 @@ exports.registerAdmin = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Terjadi kesalahan server' });
+  }
+};
+
+
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId, {
+      attributes: { exclude: ['password'] }
+    });
+    if (!user) return res.status(404).json({ message: 'User tidak ditemukan' });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Terjadi kesalahan server' });
   }
 };

@@ -29,9 +29,12 @@ exports.getAllProjects = async (req, res) => {
 exports.getMyProjects = async (req, res) => {
   try {
     const user_id = req.user.userId;
-    const projects = await Project.findAll({ where: { user_id } });
+    const projects = await Project.findAll({ 
+      where: { user_id },
+      order: [['tanggal_pengajuan', 'DESC']],});
     res.json(projects);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Gagal mengambil project milik sendiri' });
   }
 };
