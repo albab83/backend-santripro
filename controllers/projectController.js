@@ -16,7 +16,9 @@ exports.getAllProjects = async (req, res) => {
   try {
     const projects = await Project.findAll({
       include: { model: User, attributes: ['nama', 'email'] },
-      order: [['tanggal_pengajuan', 'DESC']]
+      order: [
+        ['tanggal_pengajuan', 'DESC']
+      ],  
     });
 
     res.json(projects);
@@ -31,7 +33,10 @@ exports.getMyProjects = async (req, res) => {
     const user_id = req.user.userId;
     const projects = await Project.findAll({ 
       where: { user_id },
-      order: [['tanggal_pengajuan', 'DESC']],});
+      order: [
+        ['tanggal_pengajuan', 'DESC'],
+        ['id', 'DESC']
+      ],});
     res.json(projects);
   } catch (error) {
     console.error(error);
