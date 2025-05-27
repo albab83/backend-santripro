@@ -9,4 +9,7 @@ router.post('/:projectId', verifyToken, verifySantri, journalController.createJo
 // Lihat jurnal dari suatu project (admin atau pemilik)
 router.get('/:projectId', verifyToken, journalController.getJournalsByProject);
 
+router.put('/:journalId', verifyToken, verifySantri, journalController.updateJournal);
+router.delete('/:journalId', verifyToken, verifySantri, journalController.deleteJournal);
+
 module.exports = router;
