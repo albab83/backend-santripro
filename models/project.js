@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+
       tujuan: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -33,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
       createdAt: "tanggal_pengajuan",
       updatedAt: "updated_at",
-    },
+    }
   );
 
   Project.associate = (models) => {

@@ -17,6 +17,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/project", require("./routes/project"));
 app.use("/api/journal", require("./routes/journal"));
+app.use("/api/users", require("./routes/users"));
 
 // Sync Database
 sequelize
