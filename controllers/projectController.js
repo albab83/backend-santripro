@@ -62,7 +62,7 @@ exports.rejectProject = async (req, res) => {
 
     await Project.update(
       { status: "ditolak", alasan_penolakan: reason },
-      { where: { id } }
+      { where: { id } },
     );
     res.json({ message: "Proposal ditolak" });
   } catch (error) {

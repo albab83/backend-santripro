@@ -18,7 +18,7 @@ router.put(
   "/:id/approve",
   verifyToken,
   verifyAdmin,
-  projectController.approveProject
+  projectController.approveProject,
 );
 
 // Admin menolak proposal
@@ -26,7 +26,7 @@ router.put(
   "/:id/reject",
   verifyToken,
   verifyAdmin,
-  projectController.rejectProject
+  projectController.rejectProject,
 );
 
 // Santri atau admin melihat proposal miliknya
@@ -38,7 +38,7 @@ router.put(
   "/:id/status",
   verifyToken,
   verifySantri,
-  projectController.finishProject
+  projectController.finishProject,
 );
 
 module.exports = router;

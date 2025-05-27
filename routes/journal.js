@@ -12,7 +12,7 @@ router.post(
   "/:projectId",
   verifyToken,
   verifySantri,
-  journalController.createJournal
+  journalController.createJournal,
 );
 
 // Lihat jurnal dari suatu project (admin atau pemilik)
@@ -22,13 +22,13 @@ router.put(
   "/:journalId",
   verifyToken,
   verifySantri,
-  journalController.updateJournal
+  journalController.updateJournal,
 );
 router.delete(
   "/:journalId",
   verifyToken,
   verifySantri,
-  journalController.deleteJournal
+  journalController.deleteJournal,
 );
 
 module.exports = router;
