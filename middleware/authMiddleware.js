@@ -1,15 +1,15 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 exports.verifyToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1]; // Ambil token dari header
+  const token = req.headers["authorization"]?.split(" ")[1]; // Ambil token dari header
 
   if (!token) {
-    return res.status(403).json({ message: 'Token diperlukan' });
+    return res.status(403).json({ message: "Token diperlukan" });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ message: 'Token tidak valid' });
+      return res.status(401).json({ message: "Token tidak valid" });
     }
     req.user = decoded; // Simpan informasi user ke request
     next();
@@ -17,15 +17,15 @@ exports.verifyToken = (req, res, next) => {
 };
 
 exports.verifyAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Akses hanya untuk admin' });
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Akses hanya untuk admin" });
   }
   next();
 };
 
 exports.verifySantri = (req, res, next) => {
-  if (req.user.role !== 'santri') {
-    return res.status(403).json({ message: 'Akses hanya untuk Santri' });
+  if (req.user.role !== "santri") {
+    return res.status(403).json({ message: "Akses hanya untuk Santri" });
   }
   next();
 };
