@@ -6,11 +6,11 @@ const authRoutes = require("./routes/authRoutes");
 const { sequelize } = require("./models");
 
 const http = require("http");
-const server = http.createServer(app);
+const server = http.createServer(app); 
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: "https://santri-pro.vercel.app", // domain frontend kamu
+    origin: "*", // domain frontend kamu
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -37,10 +37,9 @@ sequelize
   .catch((err) => console.error("Error connecting to database:", err));
 
   app.set("io", io);
-// Jalankan server
+  io.on("connection", (socket) => {
+    console.log("Client connected:", socket.id);
+  });
+  // Jalankan server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
-});
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
