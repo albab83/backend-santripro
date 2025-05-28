@@ -6,22 +6,34 @@ const authRoutes = require("./routes/authRoutes");
 const { sequelize } = require("./models");
 
 const http = require("http");
-const server = http.createServer(app); 
+const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: "https://santri-pro.vercel.app", // domain frontend kamu
+    origin: allowedOrigins, // domain frontend kamu
     methods: ["GET", "POST"],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
+
+const allowedOrigins = [
+  "http://localhost:5173", // untuk development
+  "https://santri-pro.vercel.app", // untuk produksi
+];
 
 // Middleware
 app.use(express.json());
 app.use(
   cors({
-    origin: "*",
-  }),
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
 );
 
 // Routes
@@ -36,10 +48,14 @@ sequelize
   .then(() => console.log("Database connected"))
   .catch((err) => console.error("Error connecting to database:", err));
 
-  app.set("io", io);
-  io.on("connection", (socket) => {
-    console.log("Client connected:", socket.id);
+app.set("io", io);
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+
+  socket.on("disconnect", (reason) => {
+    console.log(`Socket ${socket.id} disconnected: ${reason}`);
   });
-  // Jalankan server
+});
+// Jalankan server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
