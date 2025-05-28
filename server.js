@@ -9,7 +9,11 @@ const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
-  cors: { origin: "*" }
+  cors: {
+    origin: "https://santri-pro.vercel.app", // domain frontend kamu
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
 
 // Middleware
