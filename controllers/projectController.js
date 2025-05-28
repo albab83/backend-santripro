@@ -4,8 +4,8 @@ exports.createProject = async (req, res) => {
   try {
     const { judul, deskripsi, tujuan } = req.body;
     const user_id = req.user.userId;
-
     const project = await Project.create({ judul, deskripsi, tujuan, user_id });
+    req.app.get("io").emit("updateProjects");
     res.status(201).json({ message: "Proposal berhasil dikirim", project });
   } catch (error) {
     res.status(500).json({ message: "Gagal membuat project", error });
@@ -18,6 +18,8 @@ exports.getAllProjects = async (req, res) => {
       include: { model: User, attributes: ["nama", "email"] },
       order: [["tanggal_pengajuan", "DESC"]],
     });
+
+    req.app.get("io").emit("updateProjects");
 
     res.json(projects);
   } catch (error) {
@@ -36,6 +38,9 @@ exports.getMyProjects = async (req, res) => {
         ["id", "DESC"],
       ],
     });
+
+    req.app.get("io").emit("updateProjects");
+
     res.json(projects);
   } catch (error) {
     console.error(error);
@@ -47,6 +52,9 @@ exports.approveProject = async (req, res) => {
   try {
     const id = req.params.id;
     await Project.update({ status: "diterima" }, { where: { id } });
+
+    req.app.get("io").emit("updateProjects");
+
     res.json({ message: "Proposal disetujui" });
   } catch (error) {
     res.status(500).json({ message: "Gagal menyetujui proposal" });
@@ -62,8 +70,11 @@ exports.rejectProject = async (req, res) => {
 
     await Project.update(
       { status: "ditolak", alasan_penolakan: reason },
-      { where: { id } },
+      { where: { id } }
     );
+
+    req.app.get("io").emit("updateProjects");
+
     res.json({ message: "Proposal ditolak" });
   } catch (error) {
     res.status(500).json({ message: "Gagal menolak proposal" });
@@ -81,6 +92,8 @@ exports.finishProject = async (req, res) => {
     // Update status menjadi 'selesai'
     project.status = "selesai";
     await project.save();
+
+    req.app.get("io").emit("updateProjects");
 
     res.json({ message: "Project berhasil diselesaikan", project });
   } catch (error) {
