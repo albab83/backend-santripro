@@ -16,8 +16,7 @@ const io = new Server(server, {
   },
 });
 
-const allowedOrigins = [
-  "http://localhost:5173", // untuk development
+const allowedOrigins = [ // untuk development
   "https://santri-pro.vercel.app", // untuk produksi
 ];
 
