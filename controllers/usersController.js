@@ -6,7 +6,7 @@ exports.getAllUsers = async (req, res) => {
     const users = await User.findAll({
       attributes: { exclude: ["password"] },
     });
-    req.app.get("io").emit("updateSantri");
+    req.app.get("io").emit("user_update");
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: "Gagal mengambil data users", error });

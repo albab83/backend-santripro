@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
 
     // Buat user baru
     const user = await User.create({ nama, email, password, role: "santri" });
-    req.app.get("io").emit("updateSantri");
+    req.app.get("io").emit("user_update");
     return res.status(201).json({ message: "User berhasil didaftarkan", user });
   } catch (error) {
     console.error(error);
