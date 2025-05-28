@@ -10,27 +10,19 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins, // domain frontend kamu
+    origin: "https://santri-pro.vercel.app", // domain frontend kamu
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-const allowedOrigins = [ // untuk development
-  "https://santri-pro.vercel.app", // untuk produksi
-];
 
 // Middleware
 app.use(express.json());
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "https://santri-pro.vercel.app", // domain frontend kamu
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
