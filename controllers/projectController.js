@@ -37,8 +37,6 @@ exports.getMyProjects = async (req, res) => {
       ],
     });
 
-    req.app.get("io").emit("project_update");
-
     res.json(projects);
   } catch (error) {
     console.error(error);
