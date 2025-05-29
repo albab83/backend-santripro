@@ -19,8 +19,6 @@ exports.getAllProjects = async (req, res) => {
       order: [["tanggal_pengajuan", "DESC"]],
     });
 
-    req.app.get("io").emit("project_update");
-
     res.json(projects);
   } catch (error) {
     console.error(error);

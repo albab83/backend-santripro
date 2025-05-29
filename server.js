@@ -11,6 +11,7 @@ const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
     origin: "https://santri-pro.vercel.app", // domain frontend kamu
+    origin: "*", // untuk development, ganti dengan domain frontend kamu saat production
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "https://santri-pro.vercel.app", // domain frontend kamu
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
