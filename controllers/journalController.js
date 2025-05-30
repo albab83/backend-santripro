@@ -26,7 +26,10 @@ exports.createJournal = async (req, res) => {
 exports.getJournalsByProject = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const project = await Project.findByPk(projectId);
+    // Ambil project beserta user-nya
+    const project = await Project.findByPk(projectId, {
+      include: { model: require("../models").User, attributes: ["nama"] },
+    });
 
     if (
       !project ||
@@ -41,7 +44,8 @@ exports.getJournalsByProject = async (req, res) => {
     });
 
     res.json({
-      projectTitle: project.judul, // menambahkan judul project di response
+      projectTitle: project.judul,
+      userName: project.User ? project.User.nama : null, // tambahkan nama user
       journals,
     });
   } catch (error) {
