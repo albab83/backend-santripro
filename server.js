@@ -25,7 +25,7 @@ app.use(
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  })
+  }),
 );
 
 // Routes

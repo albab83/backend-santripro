@@ -4,6 +4,21 @@ exports.createProject = async (req, res) => {
   try {
     const { judul, deskripsi, tujuan } = req.body;
     const user_id = req.user.userId;
+
+    // Cek apakah user masih punya project yang statusnya belum 'selesai'
+    const existing = await Project.findOne({
+      where: {
+        user_id,
+        status: { [require("sequelize").Op.not]: "selesai" },
+      },
+    });
+    if (existing) {
+      return res.status(400).json({
+        message:
+          "Anda masih memiliki project yang belum selesai. Selesaikan dulu sebelum mengajukan project baru.",
+      });
+    }
+
     const project = await Project.create({ judul, deskripsi, tujuan, user_id });
     req.app.get("io").emit("project_update");
     res.status(201).json({ message: "Proposal berhasil dikirim", project });

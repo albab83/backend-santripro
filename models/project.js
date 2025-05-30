@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
       createdAt: "tanggal_pengajuan",
       updatedAt: "updated_at",
-    }
+    },
   );
 
   Project.associate = (models) => {
