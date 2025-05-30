@@ -17,6 +17,7 @@ exports.createJournal = async (req, res) => {
       status,
       project_id: projectId,
     });
+    req.app.get("io").emit("Received journal_update")
     res.status(201).json({ message: "Jurnal berhasil dikirim", journal });
   } catch (error) {
     res.status(500).json({ message: "Gagal kirim jurnal", error });
@@ -77,6 +78,8 @@ exports.updateJournal = async (req, res) => {
     journal.isi = isi ?? journal.isi;
     journal.status = status ?? journal.status;
     await journal.save();
+
+    req.app.get("io").emit("Received journal_update");
 
     res.json({ message: "Jurnal berhasil diupdate", journal });
   } catch (error) {
