@@ -1,10 +1,19 @@
-const { Journal, Project } = require("../models");
+const { Journal, Project, User } = require("../models");
+const sendEmail = require("../utils/sendEmail");
 
 exports.createJournal = async (req, res) => {
   try {
-    const { isi, status } = req.body;
+    const { isi } = req.body;
     const { projectId } = req.params;
-    const project = await Project.findByPk(projectId);
+    const project = await Project.findByPk(projectId, {
+      include: [
+        {
+          model: User,
+          as: "User",
+          attributes: ["nama"],
+        },
+      ],
+    });
 
     if (!project || project.user_id !== req.user.userId) {
       return res
@@ -14,12 +23,23 @@ exports.createJournal = async (req, res) => {
 
     const journal = await Journal.create({
       isi,
-      status,
       project_id: projectId,
     });
-    req.app.get("io").emit("journal_update")
+
+    // Kirim notifikasi email ke admin
+    const santriName = project.User.nama;
+    const projectName = project.judul;
+
+    await sendEmail(
+      process.env.EMAIL_ADMIN,
+      "📘 Jurnal Baru Dikirim",
+      `Si "${santriName}" mengirim jurnal baru untuk project "${projectName}":\n\n"${isi}"`
+    );
+
+    req.app.get("io").emit("journal_update");
     res.status(201).json({ message: "Jurnal berhasil dikirim", journal });
   } catch (error) {
+    console.error("Gagal kirim jurnal:", error);
     res.status(500).json({ message: "Gagal kirim jurnal", error });
   }
 };
@@ -29,7 +49,10 @@ exports.getJournalsByProject = async (req, res) => {
     const { projectId } = req.params;
     // Ambil project beserta user-nya
     const project = await Project.findByPk(projectId, {
-      include: { model: require("../models").User, attributes: ["nama"] },
+      include: {
+        model: require("../models").User,
+        attributes: ["nama", "role"],
+      },
     });
 
     if (
@@ -47,6 +70,7 @@ exports.getJournalsByProject = async (req, res) => {
     res.json({
       projectTitle: project.judul,
       userName: project.User ? project.User.nama : null, // tambahkan nama user
+      userRole: project.User ? project.User.role : null, // tambahkan role user
       journals,
     });
   } catch (error) {
@@ -113,5 +137,42 @@ exports.deleteJournal = async (req, res) => {
     res.json({ message: "Jurnal berhasil dihapus" });
   } catch (error) {
     res.status(500).json({ message: "Gagal hapus jurnal", error });
+  }
+};
+
+// controller/projectController.js
+exports.markJournalsAsRead = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    const project = await Project.findByPk(projectId);
+    if (!project)
+      return res.status(404).json({ message: "Project tidak ditemukan" });
+
+    // Hanya admin atau pemilik yang boleh
+    if (req.user.role !== "admin" && req.user.userId !== project.user_id) {
+      return res
+        .status(403)
+        .json({ message: "Tidak diizinkan mengakses jurnal ini" });
+    }
+
+    // Update semua jurnal "belum_dibaca" menjadi "sudah_dibaca"
+    await Journal.update(
+      { status: "sudah_dibaca" },
+      {
+        where: {
+          project_id: projectId,
+          status: "belum_dibaca",
+        },
+      }
+    );
+
+    // Emit event ke semua client
+    req.app.get("io").emit("journal_read");
+
+    res.json({ message: "Jurnal berhasil ditandai sebagai sudah dibaca" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Gagal menandai jurnal", error: err });
   }
 };

@@ -17,7 +17,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       status: {
-        type: DataTypes.ENUM("menunggu", "diterima", "ditolak", "selesai"),
+        type: DataTypes.ENUM(
+          "menunggu",
+          "diterima",
+          "ditolak",
+          "selesai",
+          "proses"
+        ),
         defaultValue: "menunggu",
       },
       tanggal_pengajuan: {
@@ -34,12 +40,15 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
       createdAt: "tanggal_pengajuan",
       updatedAt: "updated_at",
-    },
+    }
   );
 
   Project.associate = (models) => {
     Project.belongsTo(models.User, { foreignKey: "user_id" });
-    Project.hasMany(models.Journal, { foreignKey: "project_id" });
+    Project.hasMany(models.Journal, {
+      foreignKey: "project_id",
+      as: "Journals",
+    });
   };
 
   return Project;

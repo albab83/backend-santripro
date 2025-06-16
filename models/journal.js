@@ -11,13 +11,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "belum_dibaca",
+      },
     },
     {
       tableName: "journals",
       timestamps: true,
       createdAt: "created_at",
       updatedAt: false,
-    },
+    }
   );
 
   Journal.associate = (models) => {
